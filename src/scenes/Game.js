@@ -1,6 +1,9 @@
-import Phaser from '../lib/phaser.js'
+import Phaser from 'https://codepen.io/kaka2023/pen/NWwjJWJ.js'
 
-import Carrot from '../game/Carrot.js'
+import Carrot from 'https://codepen.io/kaka2023/pen/MWOmYwO.js'
+import DiamondCarrot from 'https://codepen.io/kaka2023/pen/NWwzxNd.js'
+import GoldenCarrot from 'https://codepen.io/kaka2023/pen/MWOBPgX.js'
+import RottenCarrot from 'https://codepen.io/kaka2023/pen/ExbBgrr.js'
 
 export default class Game extends Phaser.Scene
 {
@@ -30,20 +33,27 @@ export default class Game extends Phaser.Scene
 	{
 		this.carrotsCollected = 0
 	}
-
+/**assets start here*/
 	preload()
 	{
-		this.load.image('background', 'assets/bg_layer1.png')
-		this.load.image('platform', 'assets/ground_grass.png')
-		this.load.image('bunny-stand', 'assets/bunny1_stand.png')
-		this.load.image('bunny-jump', 'assets/bunny1_jump.png')
-		this.load.image('carrot', 'assets/carrot.png')
-
-		this.load.audio('jump', 'assets/sfx/phaseJump1.wav')
+		this.load.image('background', 'https://raw.githubusercontent.com/xmas2701/Infinite-Jumper/main/assets/Beautiful%20Rape%20Flower%20Spring%20Spring%20Background.png')
+		this.load.image('platform', 'https://raw.githubusercontent.com/xmas2701/Infinite-Jumper/main/assets/ground_grass.png')
+		this.load.image('bunny-stand', 'https://raw.githubusercontent.com/xmas2701/Infinite-Jumper/main/assets/bunny1_stand.png')
+		this.load.image('bunny-jump', 'https://raw.githubusercontent.com/xmas2701/Infinite-Jumper/main/assets/bunny1_jump.png')
+		this.load.image('carrot', 'https://raw.githubusercontent.com/xmas2701/Infinite-Jumper/main/assets/carrot.png')
+	  this.load.image('DiamondCarrot', 'https://raw.githubusercontent.com/xmas2701/Infinite-Jumper/main/assets/Diamond%20carrot.PNG')
+    this.load.image('GoldenCarrot', 'https://raw.githubusercontent.com/xmas2701/Infinite-Jumper/main/assets/Golden%20carrot.PNG')
+    this.load.image('RottenCarrot', 'https://raw.githubusercontent.com/xmas2701/Infinite-Jumper/main/assets/Rotten%20carrot.PNG')
+    this.load.image('DiamondBunnyStand', 'https://raw.githubusercontent.com/xmas2701/Infinite-Jumper/main/assets/diamondshield_stand.png')
+    this.load.image('GoldenBunnyStand', 'https://raw.githubusercontent.com/xmas2701/Infinite-Jumper/main/assets/goldenshield_stand.png')
+    this.load.image('DiamondBunnyJump', 'https://raw.githubusercontent.com/xmas2701/Infinite-Jumper/main/assets/diamondshield_jump.png')
+    this.load.image('GoldenBunnyJump', 'https://raw.githubusercontent.com/xmas2701/Infinite-Jumper/19bf630bc816b2ba5aa9330ef0cb1c15b8344740/assets/goldenshield_jump.png')
+    
+		this.load.audio('jump', 'https://raw.githubusercontent.com/xmas2701/Infinite-Jumper/main/assets/sfx/phaseJump1.wav')
 
 		this.cursors = this.input.keyboard.createCursorKeys()
 	}
-
+/**creates the background*/
 	create()
 	{
 		this.add.image(240, 320, 'background')
@@ -81,9 +91,22 @@ export default class Game extends Phaser.Scene
 		this.carrots = this.physics.add.group({
 			classType: Carrot
 		})
-
+    this.diamondcarrots = this.physics.add.group({
+			classType: DiamondCarrot
+		})
+     this.goldencarrots = this.physics.add.group({
+			classType: GoldenCarrot
+		})
+     this.rottencarrots = this.physics.add.group({
+			classType: RottenCarrot
+     })
 		this.physics.add.collider(this.platforms, this.carrots)
+    this.physics.add.collider(this.platforms, this.diamondcarrots)
 		this.physics.add.overlap(this.player, this.carrots, this.handleCollectCarrot, undefined, this)
+    this.physics.add.overlap(this.player, this.diamondcarrots, this.handleCollectCarrot, undefined, this)
+    this.physics.add.overlap(this.player, this.goldencarrots, this.handleCollectCarrot, undefined, this)
+    this.physics.add.overlap(this.player, this.rottencarrots, this.handleCollectCarrot, undefined, this)
+    	
 
 		this.carrotsCollectedText = this.add.text(240, 10, 'Carrots: 0', { color: '#000', fontSize: 24 })
 			.setScrollFactor(0)
@@ -115,11 +138,18 @@ export default class Game extends Phaser.Scene
 		if (touchingDown)
 		{
 			this.player.setVelocityY(-300)
-			this.player.setTexture('bunny-jump')
-
+      //let bunnyjumptex = 'DiamondBunnyJump'
+      this.player.setTexture('bunny-jump')
+     // this.player.setTexture(bunnyjumptex)
 			this.sound.play('jump')
 		}
-
+    /**
+    let bunnyjumptex = 'DiamondBunnyJump'
+    if (this.diamondcarrots.killAndHide(carrot)
+    {
+      this.player.setTexture(bunnyjumptex)    
+        }    
+    */
 		const vy = this.player.body.velocity.y
 		if (vy > 0 && this.player.texture.key !== 'bunny-stand')
 		{
@@ -139,7 +169,14 @@ export default class Game extends Phaser.Scene
 			this.player.setVelocityX(0)
 		}
 
-		this.horizontalWrap(this.player)
+		/**
+    var velocity = {
+      this.diamondcarrots.setVelocityY(5);
+      
+      return this;
+    }
+    */
+    this.horizontalWrap(this.player)
 
 		const bottomPlatform = this.findBottomMostPlatform()
 		if (this.player.y > bottomPlatform.y + 200)
@@ -174,9 +211,29 @@ export default class Game extends Phaser.Scene
 	{
 		const y = sprite.y - sprite.displayHeight
 
-		/** @type {Phaser.Physics.Arcade.Sprite} */
-		const carrot = this.carrots.get(sprite.x, y, 'carrot')
-
+		/** @type {Phaser.Physics.Arcade.Sprite} */  
+    
+    let carrot
+    /**
+    if(Math.random() <0.25) {
+       carrot = this.carrots.get(sprite.x, y, 'carrot')
+    } else {
+        carrot = this.diamondcarrots.get(sprite.x, y, 'DiamondCarrot')
+    }
+	 */
+    
+    let p = Math.random()
+    if (p < 0.10) {
+        carrot = this.diamondcarrots.get(sprite.x, y, 'DiamondCarrot')
+    } else if (0.1<= p && p < 0.3) {
+        carrot = this.goldencarrots.get(sprite.x, y, 'GoldenCarrot')
+    } else if (0.4<= p && p < 0.5) {
+        carrot = this.rottencarrots.get(sprite.x, y, 'RottenCarrot')
+    } else {
+        carrot = this.carrots.get(sprite.x, y, 'carrot')
+    }
+    
+      
 		carrot.setActive(true)
 		carrot.setVisible(true)
 
@@ -197,10 +254,12 @@ export default class Game extends Phaser.Scene
 	handleCollectCarrot(player, carrot)
 	{
 		this.carrots.killAndHide(carrot)
-
+    this.diamondcarrots.killAndHide(carrot)
+    this.goldencarrots.killAndHide(carrot)
+    this.rottencarrots.killAndHide(carrot)
 		this.physics.world.disableBody(carrot.body)
 
-		this.carrotsCollected++
+		this.carrotsCollected+= carrot.points
 
 		this.carrotsCollectedText.text = `Carrots: ${this.carrotsCollected}`
 	}
