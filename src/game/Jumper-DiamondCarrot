@@ -1,0 +1,22 @@
+import Phaser from 'https://codepen.io/kaka2023/pen/NWwjJWJ.js'
+import Carrot from "https://codepen.io/kaka2023/pen/MWOmYwO.js"
+
+export default class DiamondCarrot extends Carrot
+{
+  	/**
+	 * @param {Phaser.Scene} scene 
+	 * @param {number} x 
+	 * @param {number} y 
+	 * @param {string} texture 
+	 */
+	constructor(scene, x, y, texture = 'carrot')
+	{
+		super(scene, x, y, texture)
+    this.points = 5;
+    this.standtex = "DiamondBunnyStand"
+    this.jumptex = "DiamondBunnyJump"
+	}
+}
+  
+  
+
