@@ -44,18 +44,22 @@ export default class Game extends Phaser.Scene
 	  	this.load.image('DiamondCarrot', 'https://raw.githubusercontent.com/xmas2701/Infinite-Jumper/main/assets/Diamond%20carrot.PNG')
     		this.load.image('GoldenCarrot', 'https://raw.githubusercontent.com/xmas2701/Infinite-Jumper/main/assets/Golden%20carrot.PNG')
    		this.load.image('RottenCarrot', 'https://raw.githubusercontent.com/xmas2701/Infinite-Jumper/main/assets/Rotten%20carrot.PNG')
-    		this.load.image('DiamondBunnyStand', 'https://raw.githubusercontent.com/xmas2701/Infinite-Jumper/main/assets/diamondshield_stand.png')
-    		this.load.image('GoldenBunnyStand', 'https://raw.githubusercontent.com/xmas2701/Infinite-Jumper/main/assets/goldenshield_stand.png')
-    		this.load.image('DiamondBunnyJump', 'https://raw.githubusercontent.com/xmas2701/Infinite-Jumper/main/assets/diamondshield_jump.png')
-    		this.load.image('GoldenBunnyJump', 'https://raw.githubusercontent.com/xmas2701/Infinite-Jumper/19bf630bc816b2ba5aa9330ef0cb1c15b8344740/assets/goldenshield_jump.png')
+    		this.load.image('DiamondBunnyStand', 'https://raw.githubusercontent.com/xmas2701/Infinite-Jumper/994035cf208640c4657283d0996605142592e6e6/assets/A1F720E0-A543-4687-B645-9AA0A51250B9.png')
+    		this.load.image('GoldenBunnyStand', 'https://raw.githubusercontent.com/xmas2701/Infinite-Jumper/b13f14cd768ef1c2b7fc3689993119b573e83bed/assets/9E63185B-83AA-4826-9054-6B7DD66FB68D.png')
+    		this.load.image('DiamondBunnyJump', 'https://raw.githubusercontent.com/xmas2701/Infinite-Jumper/2452a51c428b11d92d102f85467af8968fbdbdbc/35B8095F-7657-43E4-A0C4-EB3041D7753F.png')
+    		this.load.image('GoldenBunnyJump', 'https://raw.githubusercontent.com/xmas2701/Infinite-Jumper/a59cc455d88b8b3f2a36961300debbc8b2c3a5f5/assets/010151B8-5FCA-46BE-B39C-84F4B0658325.png')
     
 		this.load.audio('jump', 'https://raw.githubusercontent.com/xmas2701/Infinite-Jumper/main/assets/sfx/phaseJump1.wav')
-
+    this.load.audio("BackgroundMusic","https://raw.githubusercontent.com/xmas2701/Infinite-Jumper/main/assets/sfx/Monkeys-Spinning-Monkeys.wav")
+    this.load.audio("collectDiamondCarrot","https://raw.githubusercontent.com/xmas2701/Infinite-Jumper/main/assets/sfx/mixkit-player-boost-recharging-2040.wav")
+  this.load.audio("collectGoldenCarrot","https://raw.githubusercontent.com/xmas2701/Infinite-Jumper/main/assets/sfx/mixkit-player-boost-recharging-2040.wav")
 		this.cursors = this.input.keyboard.createCursorKeys()
 	}
 /**creates the background*/
 	create()
 	{
+    this.bunnyjumptex = "bunny-jump";
+    this.bunnystandtex = "bunny-stand";
 		this.add.image(240, 320, 'background')
 			.setScrollFactor(1, 0)
 
@@ -76,7 +80,7 @@ export default class Game extends Phaser.Scene
 			body.updateFromGameObject()
 		}
 
-		this.player = this.physics.add.sprite(240, 320, 'bunny-stand')
+		this.player = this.physics.add.sprite(240, 320, this.bunnystandtex)
 			.setScale(0.5)
 
 		this.physics.add.collider(this.platforms, this.player)
@@ -138,22 +142,14 @@ export default class Game extends Phaser.Scene
 		if (touchingDown)
 		{
 			this.player.setVelocityY(-300)
-      //let bunnyjumptex = 'DiamondBunnyJump'
-      this.player.setTexture('bunny-jump')
-     // this.player.setTexture(bunnyjumptex)
+      this.player.setTexture(this.bunnyjumptex)
 			this.sound.play('jump')
 		}
-    /**
-    let bunnyjumptex = 'DiamondBunnyJump'
-    if (this.diamondcarrots.killAndHide(carrot)
-    {
-      this.player.setTexture(bunnyjumptex)    
-        }    
-    */
+  
 		const vy = this.player.body.velocity.y
-		if (vy > 0 && this.player.texture.key !== 'bunny-stand')
+		if (vy > 0 && this.player.texture.key !== this.bunnystandtex)
 		{
-			this.player.setTexture('bunny-stand')
+			this.player.setTexture(this.bunnystandtex)
 		}
 
 		if (this.cursors.left.isDown && !touchingDown)
@@ -260,9 +256,27 @@ export default class Game extends Phaser.Scene
 		this.physics.world.disableBody(carrot.body)
 
 		this.carrotsCollected+= carrot.points
+    this.bunnystandtex = carrot.standtex
+    this.bunnyjumptex = carrot.jumptex
+    
+      if (carrot.constructor.name == "DiamondCarrot") {
+      console.log(Game.time);
+      this.time.addEvent({
+        delay: 5000,
+        callback: this.changebackEvent,
+        callbackScope: this
+      });
+     
+    }
 
 		this.carrotsCollectedText.text = `Carrots: ${this.carrotsCollected}`
 	}
+    changebackEvent() {
+       this.bunnystandtex = "bunny-stand";
+       this.bunnyjumptex = "bunny-jump";
+       this.player.setTexture(this.bunnystandtex);
+  }
+
 
 	findBottomMostPlatform()
 	{
