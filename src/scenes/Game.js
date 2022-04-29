@@ -36,7 +36,7 @@ export default class Game extends Phaser.Scene
 /**assets start here*/
 	preload()
 	{
-		this.load.image('background', 'https://raw.githubusercontent.com/xmas2701/Infinite-Jumper/main/assets/Beautiful%20Rape%20Flower%20Spring%20Spring%20Background.png')
+		this.load.image('background', 'https://raw.githubusercontent.com/xmas2701/Infinite-Jumper/Main.v2/assets/5109CABB-B29B-4380-8484-379492E9A131.png')
 		this.load.image('platform', 'https://raw.githubusercontent.com/xmas2701/Infinite-Jumper/main/assets/ground_grass.png')
 		this.load.image('bunny-stand', 'https://raw.githubusercontent.com/xmas2701/Infinite-Jumper/main/assets/bunny1_stand.png')
 		this.load.image('bunny-jump', 'https://raw.githubusercontent.com/xmas2701/Infinite-Jumper/main/assets/bunny1_jump.png')
@@ -58,11 +58,14 @@ export default class Game extends Phaser.Scene
 /**creates the background*/
 	create()
 	{
+    this.jumpermusic = this.sound.add('BackgroundMusic')
+    this.diamondcollect = this.sound.add('collectDiamondCarrot')
+    this.goldencollect = this.sound.add('collectGoldenCarrot')
     this.bunnyjumptex = "bunny-jump";
     this.bunnystandtex = "bunny-stand";
-		this.add.image(240, 320, 'background')
+		this.bg = this.add.image(240, 320, 'background')
 			.setScrollFactor(1, 0)
-
+    this.bg.scale = 0.5
 		this.platforms = this.physics.add.staticGroup()
 
 		// then create 5 platforms from the group
@@ -115,6 +118,10 @@ export default class Game extends Phaser.Scene
 		this.carrotsCollectedText = this.add.text(240, 10, 'Carrots: 0', { color: '#000', fontSize: 24 })
 			.setScrollFactor(0)
 			.setOrigin(0.5, 0)
+    
+    this.jumpermusic.play(
+      {loop: true}
+    )
 	}
 
 	update(t, dt)
@@ -177,6 +184,7 @@ export default class Game extends Phaser.Scene
 		const bottomPlatform = this.findBottomMostPlatform()
 		if (this.player.y > bottomPlatform.y + 200)
 		{
+      this.jumpermusic.stop()
 			this.scene.start('game-over')
 		}
 	}
@@ -258,15 +266,24 @@ export default class Game extends Phaser.Scene
 		this.carrotsCollected+= carrot.points
     this.bunnystandtex = carrot.standtex
     this.bunnyjumptex = carrot.jumptex
-    
-      if (carrot.constructor.name == "DiamondCarrot") {
-      console.log(Game.time);
+    this.player.setTexture(this.bunnystandtex)
+
+      let cname = carrot.constructor.name 
+      if (cname == "DiamondCarrot") {
+      this.diamondcollect.play()  
       this.time.addEvent({
         delay: 5000,
         callback: this.changebackEvent,
         callbackScope: this
       });
      
+    } else if (cname == "GoldenCarrot") {
+       this.goldencollect.play()  
+        this.time.addEvent({
+        delay: 10000,
+        callback: this.changebackEvent,
+        callbackScope: this
+      });
     }
 
 		this.carrotsCollectedText.text = `Carrots: ${this.carrotsCollected}`
